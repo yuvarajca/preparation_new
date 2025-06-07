@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from schemas import GenreURLChoices, Band
+from schemas import GenreURLChoices, BandBase, BandCreate, BandWithID
 app = FastAPI()
 
 BANDS = [
@@ -20,15 +20,23 @@ BANDS = [
 ]
 
 @app.get('/bands')
-async def bands()->list[Band]:
-    return [Band(**b) for b in BANDS]
+async def bands()->list[BandWithID]:
+    return [BandWithID(**b) for b in BANDS]
 
-@app.get('/bands/{band_id}')
-async def band(band_id:int) -> Band:
-    band = next((Band(**b) for b in BANDS if b['id'] ==  band_id), None)
+@app.get('/bands/{band_id}') 
+async def band(band_id:int) -> BandWithID:
+    band = next((BandWithID(**b) for b in BANDS if b['id'] ==  band_id), None)
     if band is None:
         raise HTTPException(status_code = 404, detail='band not found')
     return band
+
+@app.post('/bands')
+async def create_band(band_data: BandCreate) -> BandWithID:
+    id = BANDS[-1]['id'] + 1
+    band = BandWithID(id=id, **band_data.model_dump()).model_dump()
+    BANDS.append(band)
+    return band
+
 
 
 
