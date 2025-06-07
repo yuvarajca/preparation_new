@@ -7,7 +7,9 @@ BANDS = [
         'id':1, 'name':'The Kinks', 'genre': 'Rock'
     },
     {
-        'id':2, 'name':'The ship', 'genre': 'Fight'
+        'id':2, 'name':'The ship', 'genre': 'Fight', 'albums':[{
+            'title':'Master of reality', 'release_date':'1971-07-21'
+        }]
     },
     {
         'id':3, 'name':'RED', 'genre': 'suspense'
@@ -27,3 +29,7 @@ async def band(band_id:int) -> Band:
     if band is None:
         raise HTTPException(status_code = 404, detail='band not found')
     return band
+
+
+
+
